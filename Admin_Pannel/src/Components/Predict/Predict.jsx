@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Table from 'react-bootstrap/Table';
+import Container from 'react-bootstrap/Container';
 
 function DataTable() {
   const [data, setData] = useState([]);
@@ -8,7 +10,7 @@ function DataTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.23.50:5000/?num_days=${numDays}`);
+        const response = await axios.get(`http://172.23.1.220:5000/?num_days=${numDays}`);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -24,20 +26,20 @@ function DataTable() {
 
   return (
     <div>
-      <h2>Waste Forcasted Data Table</h2>
-      <div>
-        <label htmlFor="numDays">Select Number of  Days:</label>
+      <h1 style={{textAlign:"center"}}>Waste Forcasted Data Table</h1>
+      <Container fluid>
+        <label htmlFor="numDays">Select Number of Days:</label>
         <select id="numDays" value={numDays} onChange={handleSelectChange}>
           {[...Array(30).keys()].map((day) => (
             <option key={day + 1} value={day + 1}>{day + 1}</option>
           ))}
         </select>
-      </div>
-      <table>
+      
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Day</th>
-            <th>Value</th>
+            <th>Amount of Waste(per person)</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +50,8 @@ function DataTable() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
+      </Container>
     </div>
   );
 }

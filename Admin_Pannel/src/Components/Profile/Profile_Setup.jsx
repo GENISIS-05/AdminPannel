@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../Context/Authcontext';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 const MyForm = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
@@ -13,7 +14,7 @@ const MyForm = () => {
     email: '',
     location: [null, null], // Initially set to null, will be updated after getting the location
     type: '',
-    role: '',
+    role: 'distributor', // Set the default role to distributor 
     phone: ''
   });
 
@@ -28,13 +29,13 @@ const MyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Check if any required field is empty
-    const requiredFields = ['name', 'email', 'type', 'role', 'phone'];
+    const requiredFields = ['name', 'email', 'type', 'phone'];
     const emptyFields = requiredFields.filter(field => !formData[field]);
     if (emptyFields.length > 0) {
       alert(`Please fill in the following fields: ${emptyFields.join(', ')}`);
       return;
     }
-  
+
     try {
       // Make API call to send form data
       console.log(`http://localhost:3000/api/order/addUserOrder`);
@@ -49,7 +50,6 @@ const MyForm = () => {
       alert('Error submitting form');
     }
   };
-  
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -97,11 +97,15 @@ const MyForm = () => {
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput5">
           <Form.Label>Organisation type?</Form.Label>
-          <Form.Control type="text" name="type" value={formData.type} onChange={handleChange} required />
+          <Form.Select name="type" value={formData.type} onChange={handleChange} required>
+            <option value="">Select...</option>
+            <option value="NGO">NGO</option>
+            <option value="Food Bank">Food Bank</option>
+          </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput6">
-          <Form.Label>Are you a donor or distributor?</Form.Label>
-          <Form.Control type="text" name="role" value={formData.role} onChange={handleChange} required />
+          <Form.Label>Your Role</Form.Label>
+          <Form.Control type="text" name="role" value={formData.role} onChange={handleChange} disabled />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput7">
           <Form.Label>Phone Number</Form.Label>

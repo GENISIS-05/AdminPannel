@@ -9,6 +9,8 @@ import Active from './Components/Order/Active'
 import Details from './Components/Order/Details'
 import Graph from './Components/Graph/Location'
 import Predict from './Components/Predict/Predict'
+import Archive from './Components/Order/Archive'
+import Suggestloc from './Components/Graph/Suggestloc'
 export default function App() {
   const { token,login } = useAuth();
 
@@ -24,6 +26,9 @@ export default function App() {
       {token!=undefined ? 
       <>
       <Navbs></Navbs>
+      <br />
+      <br />
+      <br />
       <Routes>
         <Route path="/" element={<Profile />} />
         <Route path="/login" element={<Login />} />
@@ -32,6 +37,8 @@ export default function App() {
         <Route path="/details/:oid" element={<Details />} />
 <Route path='/graph' element={<Graph></Graph>} />
 <Route path="/predict" element={<Predict />} />
+<Route path="/archive" element={<Archive/>} />
+<Route path="/location" element={<Suggestloc></Suggestloc>} />
         <Route path="*" element={<h1>Nots Found</h1>} />
       </Routes>
       </>

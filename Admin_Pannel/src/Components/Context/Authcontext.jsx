@@ -23,12 +23,6 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem('auth-token');
     // localStorage.removeItem('role');
-    localStorage.removeItem('phlebo_details');
-    localStorage.removeItem('lab_details');
-    localStorage.removeItem('test_details');
-    localStorage.removeItem('Customer_List');
-    localStorage.removeItem('data');
-    localStorage.removeItem('order');
   };
 
   

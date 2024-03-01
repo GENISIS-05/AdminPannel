@@ -9,7 +9,10 @@ const Details = () => {
   const { oid } = useParams(); // Get oid from URL params
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-const { token } = useAuth();
+  const [assigning, setAssigning] = useState(false); // New state for assign button
+  const [error, setError] = useState(null); // New state for error handling
+  const { token } = useAuth();
+
   const fetchOrder = async () => {
     try {
       const response = await axios.get(
@@ -18,28 +21,28 @@ const { token } = useAuth();
       setOrder(response.data[0]);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching order:", error);
+      setError("Error fetching order. Please try again later.");
       setLoading(false);
     }
   };
-  const handlesubmit = async () => {
+
+  const handleSubmit = async () => {
     try {
-        // Make API call to update the order status
-        setLoading(true);
+      setAssigning(true);
       const response = await axios.put(
         `http://localhost:3000/api/order/updateOrder/${oid}`,
         { reciveruid: token }
       );
       console.log(response.data);
-        setLoading(false);
+      setAssigning(false);
       alert("Order Assigned to you");
       window.location.reload();
-      // Optionally, you can update the local state to reflect the change in status
     } catch (error) {
-      console.error("Error updating order:", error);
+      setError("Error updating order. Please try again later.");
+      setAssigning(false);
     }
   };
-  
+
   useEffect(() => {
     fetchOrder();
   }, []);
@@ -47,11 +50,10 @@ const { token } = useAuth();
   return (
     <div className="details-container">
       {loading ? (
-        <Spinner
-          animation="border"
-          role="status"
-          className="spinner"
-        />
+        <div className="loading-overlay">
+          <Spinner animation="border" role="status" className="spinner" />
+          <p>Loading...</p>
+        </div>
       ) : (
         <Card className="order-card">
           <Card.Body>
@@ -95,16 +97,30 @@ const { token } = useAuth();
                 </>
               )}
             </Card.Text>
-            <div style={{display:"flex",justifyContent:"center"}}>
-
-            {order.status ? "Already Assigned" : <Button variant="success" className="back-button" onClick={handlesubmit}>
-              {loading&& <Spinner animation="border" role="status" />} Assign to me
-            </Button>}
-            
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              {order.status ? (
+                <Button variant="success" disabled>
+                  Order Assigned 
+                </Button>
+              ) : (
+                <Button
+                  variant="success"
+                  className="back-button"
+                  onClick={handleSubmit}
+                  disabled={assigning} // Disable button while assigning
+                >
+                  {assigning ? (
+                    <Spinner animation="border" role="status" />
+                  ) : (
+                    "Assign to me"
+                  )}
+                </Button>
+              )}
             </div>
           </Card.Body>
         </Card>
       )}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

@@ -1,67 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Card from 'react-bootstrap/Card';
-import { Button, Col, Container, Row,Spinner } from 'react-bootstrap';
+import { Card, Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../Context/Authcontext';
+import "./Active.css";
+
 const OrderCards = () => {
+  const { token } = useAuth();
   const [orders, setOrders] = useState([]);
-const [spinner, setSpinner] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+
   useEffect(() => {
     setSpinner(true);
-    axios.get('http://localhost:3000/api/order/Orderloc')
+    axios.get(`http://localhost:3000/api/order/Orderloc/${token}`)
       .then(response => {
         setOrders(response.data);
         setSpinner(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setSpinner(false);
       });
   }, []);
 
-  return (
-    <Container fluid>
-        <h1 style={{textAlign:"center",borderBottom:"2px solid black"}}>Active Order near your location</h1>
-        {spinner ? <Spinner animation="border" role="status" style={{position:"absolute",top:"50%",left:"50%"}} /> :<>
-        
-        <Row>
-      { orders.length>0 ? orders.map((order) => (
-        <Col md={3} xs={12} key={order._id}>
-        <Card  style={{ width: '18rem',border:"2px solid black" }}>
-          <Card.Body>
-            <Card.Title> <span style={{fontWeight:"700"}}>Order ID:</span> {order.oid}</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted"> <span style={{fontWeight:"700"}}>Time:</span> {order.time}</Card.Subtitle>
-            <Card.Text>
-                <p><span style={{fontWeight:"700"}}>Location:</span> {order.location}</p>
-              <p style={{fontWeight:"700"}}>Food Items:</p>
-              <ul>
-                {order.foodname.map((food, index) => (
-                  <li key={index}>
-                    {food} - Quantity: {order.quantity[index]}
-                  </li>
-                ))}
-              </ul>
-              
-              <p> <span style={{fontWeight:"700"}}>Status:</span> {order.status ? "Completed" : "Pending"}</p>
-              <p> <span style={{fontWeight:"700"}} >Date:</span> {new Date(order.date).toLocaleDateString()}</p>
-            </Card.Text>
-            <div style={{display:"flex",justifyContent:"center"}}>
-                
-               
-            <Link to={`/details/${order.oid}`} style={{textAlign:"center"}}>
-                <Button variant="primary">View Details</Button>
-                </Link>
+  const copyTotalQuantity = (totalQuantity) => {
+    navigator.clipboard.writeText(totalQuantity.toString());
+  };
 
-</div>
-            
-          </Card.Body>
-        </Card>
-        </Col>
-      )): <h1>No Active Orders</h1>}
-      </Row>
-        </>
-        
-        }
-        
+  return (
+    <Container fluid className=' mt-5'>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Active Orders near your location</h1>
+      {spinner ? (
+        <Spinner animation="border" role="status" style={{ position: "absolute", top: "50%", left: "50%" }} />
+      ) : (
+        <Row>
+          {orders.length > 0 ? orders.map((order) => (
+            <Col md={4} sm={6} xs={12} key={order._id} className='mb-3'>
+              <Card className="custom-card">
+                <Card.Body>
+                  <Card.Title className="card-title">Order ID: {order.oid}</Card.Title>
+                  <Card.Text>
+                    <p className="card-text"><strong>Time:</strong> {order.time}</p>
+                    <p className="card-text"><strong>Location:</strong> {order.location}</p>
+                    <p className="card-text"><strong>Food Items:</strong></p>
+                    <ul className="food-list">
+                      {order.foodname.map((food, index) => (
+                        <li key={index}>
+                          {food} - Quantity: {order.quantity[index]}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="card-text">
+                      <strong>Total quantity:</strong> {order.total} person(s)
+                      
+                      <Button className='mx-3' variant="outline-primary" size="md" onClick={() => copyTotalQuantity(order.total)}>
+                        Copy
+                      </Button>
+                    </p>
+                    <p className="card-text"><strong>Status:</strong> {order.status ? "Completed" : "Pending"}</p>
+                    <p className="card-text"><strong>Date:</strong> {new Date(order.date).toLocaleDateString()}</p>
+                  </Card.Text>
+                  <div className="button-container">
+                    <Link to={`/details/${order.oid}`} className="custom-link">
+                      <Button variant="primary">View Details</Button>
+                    </Link>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          )) : (
+            <h3 style={{ textAlign: "center", width: "100%" }}>No Active Orders</h3>
+          )}
+        </Row>
+      )}
     </Container>
   );
 };

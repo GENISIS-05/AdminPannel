@@ -1,0 +1,42 @@
+.custom-card {
+    border: 0px solid #007bff;
+    border-radius: 10px;
+    box-shadow: 200px 20px 200px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    
+  }
+  
+  .custom-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .card-title {
+    text-align: center;
+    font-size: 24px; /* Increased font size */
+    margin-bottom: 15px;
+  }
+  
+  .card-text {
+    font-size: 18px; /* Increased font size */
+    line-height: 1.5;
+  }
+  
+  .food-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  
+  .custom-link {
+    text-decoration: none;
+  }
+  
+  .custom-link:hover {
+    text-decoration: none;
+  }
+  

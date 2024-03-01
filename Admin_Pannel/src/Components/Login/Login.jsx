@@ -93,7 +93,7 @@ export default function Login() {
                 onChange={handlechange}
               />
 
-              <Form.Text className="text-muted">
+              <Form.Text  style={{color:"white"}}>
                 We'll never share your number with anyone else.
               </Form.Text>
 
